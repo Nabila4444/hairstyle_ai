@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Rekomendasi Gaya Rambut</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    select, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    .hasil {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h2>Rekomendasi Gaya Rambut Berdasarkan Bentuk Wajah</h2>
+  <div class="form-group">
+    <label for="bentukWajah">Pilih bentuk wajah Anda:</label><br>
+    <select id="bentukWajah">
+      <option value="">-- Pilih --</option>
+      <option value="oval">Oval</option>
+      <option value="bulat">Bulat</option>
+      <option value="persegi">Persegi</option>
+      <option value="segitiga">Segitiga</option>
+    </select>
+  </div>
+  <button onclick="cariRekomendasi()">Cari Rekomendasi</button>
+  <div class="hasil" id="hasilRekomendasi"></div>
+
+  <script>
+    const rekomendasi = {
+      oval: "Cocok dengan hampir semua gaya rambut, terutama bob panjang dan layer.",
+      bulat: "Coba gaya rambut panjang dengan layer atau potongan shaggy untuk mengurangi kesan bulat.",
+      persegi: "Disarankan gaya rambut bergelombang atau layer lembut untuk mengurangi garis rahang tegas.",
+      segitiga: "Gaya rambut yang bervolume di atas seperti pompadour atau pixie cut cocok untuk wajah segitiga."
+    };
+
+    function cariRekomendasi() {
+      const bentuk = document.getElementById("bentukWajah").value;
+      const hasil = document.getElementById("hasilRekomendasi");
+
+      if (bentuk && rekomendasi[bentuk]) {
+        hasil.textContent = rekomendasi[bentuk];
+      } else {
+        hasil.textContent = "Silakan pilih bentuk wajah terlebih dahulu.";
+      }
+    }
+  </script>
+</body>
+</html>
