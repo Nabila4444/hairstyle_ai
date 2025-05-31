@@ -1,398 +1,289 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rekomendasi Gaya Rambut</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Rekomendasi Gaya Rambut Perempuan</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #83a4d4, #b6fbff);
       padding: 20px;
     }
 
     .container {
       max-width: 800px;
       margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      animation: slideIn 0.8s ease-out;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .header {
-      background: linear-gradient(135deg, #2196F3, #1976D2);
-      padding: 40px 30px;
-      text-align: center;
-      color: white;
-    }
-
-    .header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .header p {
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-
-    .content {
-      padding: 40px 30px;
-    }
-
-    .form-section {
-      background: #f8f9ff;
-      border-radius: 15px;
+      background: #fff;
       padding: 30px;
-      margin-bottom: 30px;
-      border: 2px solid #e3f2fd;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .form-group {
-      margin-bottom: 25px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #1976D2;
-      margin-bottom: 15px;
-    }
-
-    select {
-      width: 100%;
-      padding: 15px 20px;
-      font-size: 1.1rem;
-      border: 3px solid #90CAF9;
-      border-radius: 12px;
-      background: white;
+    h1, h2 {
+      text-align: center;
       color: #333;
-      cursor: pointer;
-      transition: all 0.3s ease;
     }
 
-    select:focus {
-      outline: none;
-      border-color: #2196F3;
-      box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.2);
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
     }
 
-    select:hover {
-      border-color: #42A5F5;
-    }
-
-    .btn-container {
-      text-align: center;
-      margin: 30px 0;
-    }
-
-    .btn-search {
-      background: linear-gradient(135deg, #2196F3, #1976D2);
-      color: white;
-      border: none;
-      padding: 15px 40px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .btn-search:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 25px rgba(33, 150, 243, 0.4);
-      background: linear-gradient(135deg, #42A5F5, #2196F3);
-    }
-
-    .btn-search:active {
-      transform: translateY(-1px);
-    }
-
-    .hasil-container {
-      margin-top: 30px;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.5s ease;
-    }
-
-    .hasil-container.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .hasil-card {
-      background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
-      border-radius: 15px;
-      padding: 30px;
-      border-left: 6px solid #2196F3;
-      box-shadow: 0 10px 30px rgba(33, 150, 243, 0.1);
-    }
-
-    .hasil-header {
-      display: flex;
-      align-items: center;
+    select, button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       margin-bottom: 20px;
+      font-size: 16px;
     }
 
-    .hasil-icon {
-      width: 50px;
-      height: 50px;
-      background: #2196F3;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 15px;
+    button {
+      background-color: #2196F3;
       color: white;
-      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
     }
 
-    .hasil-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1565C0;
+    button:hover {
+      background-color: #1976D2;
     }
 
-    .hasil-text {
-      font-size: 1.1rem;
-      color: #0D47A1;
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .tips-section {
-      background: rgba(33, 150, 243, 0.1);
-      border-radius: 10px;
+    .result {
+      background: #f0f8ff;
       padding: 20px;
+      border-radius: 10px;
       margin-top: 20px;
     }
 
-    .tips-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #1976D2;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-    }
-
-    .tips-list {
-      list-style: none;
-      padding-left: 0;
-    }
-
-    .tips-list li {
-      background: white;
-      margin-bottom: 10px;
-      padding: 12px 15px;
-      border-radius: 8px;
-      border-left: 3px solid #2196F3;
-      font-size: 1rem;
-      color: #0D47A1;
-    }
-
-    .loading {
-      display: none;
-      text-align: center;
-      margin: 20px 0;
-    }
-
-    .loading.show {
-      display: block;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #E3F2FD;
-      border-top: 4px solid #2196F3;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 15px;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
+    .result img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>✨ Rekomendasi Gaya Rambut</h1>
-      <p>Temukan gaya rambut yang sempurna untuk bentuk wajah dan jenis rambut Anda</p>
-    </div>
+    <h1>✨ AI Rekomendasi Gaya Rambut</h1>
+    <p style="text-align:center">Pilih bentuk wajah dan jenis rambut Anda untuk mendapatkan gaya yang cocok</p>
 
-    <div class="content">
-      <div class="form-section">
-        <div class="form-group">
-          <label for="bentukWajah">🎯 Pilih Bentuk Wajah Anda:</label>
-          <select id="bentukWajah">
-            <option value="">-- Pilih Bentuk Wajah --</option>
-            <option value="oval">🥚 Oval</option>
-            <option value="bulat">⭕ Bulat</option>
-            <option value="persegi">⬜ Persegi</option>
-            <option value="segitiga">🔺 Segitiga</option>
-          </select>
-        </div>
+    <label for="wajah">Pilih Bentuk Wajah:</label>
+    <select id="wajah">
+      <option value="">-- Pilih --</option>
+      <option value="oval">Oval</option>
+      <option value="bulat">Bulat</option>
+      <option value="persegi">Persegi</option>
+      <option value="segitiga">Segitiga</option>
+    </select>
 
-        <div class="form-group">
-          <label for="jenisRambut">💈 Pilih Jenis Rambut Anda:</label>
-          <select id="jenisRambut">
-            <option value="">-- Pilih Jenis Rambut --</option>
-            <option value="lurus">🪮 Lurus</option>
-            <option value="bergelombang">🌊 Bergelombang</option>
-            <option value="keriting">🌀 Keriting</option>
-          </select>
-        </div>
+    <label for="rambut">Pilih Jenis Rambut:</label>
+    <select id="rambut">
+      <option value="">-- Pilih --</option>
+      <option value="lurus">Lurus</option>
+      <option value="gelombang">Gelombang</option>
+      <option value="keriting">Keriting</option>
+    </select>
 
-        <div class="btn-container">
-          <button class="btn-search" onclick="cariRekomendasi()">🔍 Cari Rekomendasi</button>
-        </div>
+    <button onclick="tampilkanRekomendasi()">Cari Rekomendasi</button>
 
-        <div class="loading" id="loading">
-          <div class="spinner"></div>
-          <p style="color: #2196F3; font-weight: 600;">Mencari rekomendasi terbaik untuk Anda...</p>
-        </div>
-      </div>
-
-      <div class="hasil-container" id="hasilContainer">
-        <div class="hasil-card">
-          <div class="hasil-header">
-            <div class="hasil-icon">💇</div>
-            <div class="hasil-title" id="hasilTitle">Rekomendasi Gaya Rambut</div>
-          </div>
-          <div class="hasil-text" id="hasilRekomendasi"></div>
-          <div class="tips-section" id="tipsSection" style="display: none;">
-            <div class="tips-title">💡 Tips Tambahan:</div>
-            <ul class="tips-list" id="tipsList"></ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="hasil" class="result" style="display:none"></div>
   </div>
 
   <script>
-    const rekomendasi = {
-      oval: {
-        text: "Selamat! Wajah oval adalah bentuk wajah yang ideal...",
-        recommendations: "Bob panjang, layer bertingkat, pixie cut, atau rambut panjang lurus.",
-        tips: ["Coba eksperimen dengan berbagai panjang rambut", "Poni samping atau poni lurus cocok", "Gaya rambut bergelombang atau lurus bagus", "Hindari gaya yang menutupi wajah"],
-        subRecommendations: {
-          lurus: "Coba gaya sleek straight dengan belahan tengah.",
-          bergelombang: "Gaya beach waves sangat cocok untukmu.",
-          keriting: "Layer pendek membuat keriting tampak rapi dan alami."
-        }
-      },
-      bulat: {
-        text: "Untuk wajah bulat, ciptakan ilusi wajah lebih panjang.",
-        recommendations: "Rambut panjang ber-layer, shaggy cut, atau bob panjang dengan volume di atas.",
-        tips: ["Volume di bagian atas", "Hindari poni tumpul", "Layer panjang bikin wajah lebih oval", "Poni samping lebih baik"],
-        subRecommendations: {
-          lurus: "Belahan samping akan memperpanjang kesan wajah.",
-          bergelombang: "Loose wave menciptakan definisi dan tinggi.",
-          keriting: "Volume keriting natural bisa diatur dengan potongan trapezium."
-        }
-      },
-      persegi: {
-        text: "Wajah persegi punya garis rahang tegas, perlu dilunakkan.",
-        recommendations: "Layer lembut, potongan bergelombang atau curve bob sangat bagus.",
-        tips: ["Gaya dengan gerakan dan tekstur", "Layer lembut di wajah", "Hindari potongan tumpul", "Keriting/gelombang alami cocok"],
-        subRecommendations: {
-          lurus: "Gaya side-part panjang dapat mengurangi kesan kotak.",
-          bergelombang: "Wave lembut akan menambah kesan feminin.",
-          keriting: "Curly bob dengan layer lembut sangat ideal."
-        }
-      },
-      segitiga: {
-        text: "Wajah segitiga memiliki dagu sempit, fokus di volume atas.",
-        recommendations: "Pompadour, pixie cut bervolume, bob dengan layer atas.",
-        tips: ["Volume atas & samping", "Poni tebal seimbangkan dahi", "Hindari bagian atas rata", "Layer pendek di dekat telinga"],
-        subRecommendations: {
-          lurus: "Coba blunt bob dengan volume di atas.",
-          bergelombang: "Messy wave membuat bentuk wajah seimbang.",
-          keriting: "Pixie curly cut menyeimbangkan proporsi wajah."
-        }
-      }
-    };
+    const dataRekomendasi = {
+  oval: {
+    lurus: {
+      gaya: "Bob Panjang, Layer Panjang, Poni Samping",
+      tips: [
+        "Bob Panjang memberi keseimbangan alami pada wajah oval",
+        "Layer panjang menambah volume dan dimensi tanpa membuat wajah terlihat panjang",
+        "Poni samping mempertegas tulang pipi"
+      ],
+      gambar: [
+  "images/oval_lurus_bobpanjang.jpg",
+  "images/oval_lurus_layerpanjang.jpg",
+  "images/oval_lurus_ponisamping.jpg"
+] 
+    },
+    gelombang: {
+      gaya: "Long Waves, Layered Waves, Pixie dengan Poni Panjang",
+      tips: [
+        "Long waves memberi kesan feminin dan santai",
+        "Layered waves memberikan tekstur dan volume alami",
+        "Pixie dengan poni panjang menambah kesan modern dan berani"
+      ],
+      gambar: [
+  "images/oval_gelombang_longwaves.jpg",
+  "images/oval_gelombang_layerdwaves.jpg",
+  "images/oval_gelombang_pixie.jpg"
+]
+    },
+    keriting: {
+      gaya: "Shoulder-Length Curly Bob, Curly Shag, Middle Part Afro",
+      tips: [
+        "Curly bob menunjukkan bentuk wajah tanpa menumpuk di dagu",
+        "Curly shag mengikuti gelombang alami",
+        "Middle part afro fokus pada simetri wajah"
+      ],
+      gambar: [
+  "images/oval_keriting_curlybob.jpg",
+  "images/oval_keriting_curlyshag.jpg",
+  "images/oval_keriting_middlepartafro.jpg"
+]
+    }
+  },
+  bulat: {
+    lurus: {
+      gaya: "Layer Panjang Lurus, Side Swept Bangs, Lob Asimetris",
+      tips: [
+        "Layer panjang membuat wajah tampak lebih panjang",
+        "Side swept bangs menyeimbangkan pipi yang chubby",
+        "Lob asimetris memberi kesan wajah lebih ramping"
+      ],
+      gambar: [
+  "images/bulat_lurus_layerpanjang.jpg",
+  "images/bulat_lurus_sidesweptbangs.jpg",
+  "images/bulat_lurus_lobasimetris.jpg"
+]
+    },
+    gelombang: {
+      gaya: "Soft Waves di Bawah Dagu, Messy Layered Waves, Deep Side Part",
+      tips: [
+        "Fokuskan volume di bawah dagu, hindari di pipi",
+        "Messy layered waves memberi kesan lebih tirus",
+        "Deep side part menciptakan ilusi wajah lebih oval"
+      ],
+      gambar: [
+  "images/bulat_geelombang_softwaves.jpg",
+  "images/bulat_gelombang_messylayeredwaves.jpg",
+  "images/bulat_gelombang_deepsidepart.jpg"
+]
+    },
+    keriting: {
+      gaya: "Curly Undercut, Shaggy Curly Bob, Asymmetrical Curly Bob",
+      tips: [
+        "Curly undercut fokus volume di atas, bukan samping",
+        "Shaggy curly bob mengontrol volume dan memberi struktur",
+        "Asymmetrical curly bob membantu memanjangkan wajah"
+      ],
+      gambar: [
+  "images/bulat_keriting_curlyundercut.jpg",
+  "images/bulat_keriting_shaggycurlybob.jpg",
+  "images/bulat_keriting_asymmetricalcurlybob.jpg"
+]
+    }
+  },
+  persegi: {
+    lurus: {
+      gaya: "Layer Lembut, Blunt Bangs dengan Layer, Shoulder-Length Bob",
+      tips: [
+        "Layer lembut melembutkan rahang yang tegas",
+        "Blunt bangs dengan layer memperhalus garis wajah",
+        "Bob panjang medium meredam sudut wajah"
+      ],
+      gambar: [
+  "images/persegi_lurus_layerlembut.jpg",
+  "images/persegi_lurus_bluntbangs.jpg",
+  "images/persegi_lurus_shoulderlengthbob.jpg"
+]
+    },
+    gelombang: {
+      gaya: "Loose Waves, Layer Waves, Side-Parted Lob",
+      tips: [
+        "Loose waves menyeimbangkan bentuk wajah bersudut",
+        "Layer waves memberi kesan lembut dan feminin",
+        "Side-parted lob mengurangi kesan 'kotak' pada rahang"
+      ],
+      gambar: [
+  "images/persegi_gelombang_loosewaves.jpg",
+  "images/persegi_gelombang_layerwaves.jpg",
+  "images/persegi_gelombang_sidepartedlob.jpg"
+]
+    },
+    keriting: {
+      gaya: "Voluminous Curls di Atas Bahu, Curly Bangs, Angled Curly Bob",
+      tips: [
+        "Voluminous Curls Fokus di atas untuk menyeimbangkan rahang",
+        "Curly bangs menyamarkan garis dahi",
+        "Angled curly bob memberi gerakan alami"
+      ],
+      gambar: [
+  "images/persegi_keriting_voluminouscurls.jpg",
+  "images/persegi_keriting_curlybangs.jpg",
+  "images/persegi_keriting_angledcurlybob.jpg"
+]
+    }
+  },
+  segitiga: {
+    lurus: {
+      gaya: "Full Bangs, Choppy Bob, Shoulder Length Layer",
+      tips: [
+        "Full bangs menyeimbangkan dahi sempit dan rahang lebar",
+        "Choppy bob memberi tekstur dan volume di atas",
+        "Shoulder length layer membuat wajah lebih proporsional"
+      ],
+      gambar: [
+    "images/segitiga_lurus_fullbangs.jpg",
+    "images/segitiga_lurus_choppybob.jpg",
+    "images/segitiga_lurus_shoulderlengthlayer.jpg"
+      ]
+    },
+    gelombang: {
+      gaya: "Wavy Bob dengan Poni Tebal, Loose Curls with Volume on Top, Half-Up Waves",
+      tips: [
+        "Wavy bob menambah dimensi pada bagian atas wajah",
+        "Loose curls dengan volume atas menyeimbangkan dahi dan rahang",
+        "Half-up waves fokuskan gaya ke bagian atas kepala"
+      ],
+      gambar: [
+    "images/segitiga_gelombang_wavybob.jpg",
+    "images/segitiga_gelombang_loosecurls.jpg",
+    "images/segitiga_gelombang_halfupwaves.jpg"
+      ]
+    },
+    keriting: {
+      gaya: "High Volume Curly Top, Curly Bob dengan Poni, Asymmetrical Curly Style",
+      tips: [
+        "High volume curly top menyeimbangkan proporsi wajah",
+        "Curly bob dengan poni melembutkan rahang",
+        "Asymmetrical curly style menyamarkan rahang lebar"
+      ],
+      gambar: [
+  "images/segitiga_keriting_highvolumecurlytop.jpg",
+  "images/segitiga_keriting_curlybob.jpg",
+  "images/segitiga_keriting_asymmetricalcurly.jpg"
+]
+    }
+  }
+};
 
-    function cariRekomendasi() {
-      const bentuk = document.getElementById("bentukWajah").value;
-      const jenis = document.getElementById("jenisRambut").value;
-      const hasilContainer = document.getElementById("hasilContainer");
-      const hasilRekomendasi = document.getElementById("hasilRekomendasi");
-      const hasilTitle = document.getElementById("hasilTitle");
-      const tipsSection = document.getElementById("tipsSection");
-      const tipsList = document.getElementById("tipsList");
-      const loading = document.getElementById("loading");
+
+    function tampilkanRekomendasi() {
+      const bentuk = document.getElementById("wajah").value;
+      const jenis = document.getElementById("rambut").value;
+      const hasil = document.getElementById("hasil");
 
       if (!bentuk || !jenis) {
-        alert("Silakan pilih bentuk wajah dan jenis rambut terlebih dahulu!");
+        alert("Silakan pilih kedua opsi terlebih dahulu!");
         return;
       }
 
-      loading.classList.add("show");
-      hasilContainer.classList.remove("show");
+      const data = dataRekomendasi[bentuk][jenis];
+      hasil.innerHTML = `
+        <h2>Rekomendasi Gaya Rambut</h2>
+        <p><strong>Gaya:</strong> ${data.gaya}</p>
+        <p><strong>Tips:</strong></p>
+        <ul>${data.tips.map(tip => `<li>${tip}</li>`).join('')}</ul>
+        <div class="gambar-container">
+          ${data.gambar.map(src => `<img src="${src}" alt="Gaya Rambut">`).join('')}
+        </div>
 
-      setTimeout(() => {
-        loading.classList.remove("show");
 
-        if (rekomendasi[bentuk]) {
-          const data = rekomendasi[bentuk];
-          const sub = data.subRecommendations?.[jenis] ?? "";
-
-          hasilTitle.textContent = `Rekomendasi untuk Wajah ${bentuk.charAt(0).toUpperCase() + bentuk.slice(1)}`;
-          hasilRekomendasi.innerHTML = `
-            <p style="margin-bottom: 15px;"><strong>${data.text}</strong></p>
-            <p style="background: rgba(255, 255, 255, 0.7); padding: 15px; border-radius: 8px; border-left: 4px solid #2196F3;">
-              <strong>💫 Gaya yang Direkomendasikan:</strong><br>
-              ${data.recommendations}
-            </p>
-            ${sub ? `<p style="margin-top: 10px; color:#0D47A1;"><strong>🎨 Rekomendasi untuk rambut ${jenis}:</strong> ${sub}</p>` : ''}
-          `;
-
-          tipsList.innerHTML = '';
-          data.tips.forEach(tip => {
-            const li = document.createElement('li');
-            li.textContent = tip;
-            tipsList.appendChild(li);
-          });
-
-          tipsSection.style.display = 'block';
-          hasilContainer.classList.add("show");
-        }
-      }, 1500);
+      `;
+      hasil.style.display = "block";
     }
   </script>
 </body>
