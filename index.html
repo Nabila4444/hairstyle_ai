@@ -5,286 +5,716 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Rekomendasi Gaya Rambut Perempuan</title>
   <style>
+    /* Reset semua margin, padding dan set box-sizing untuk semua elemen */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Styling untuk body halaman - mengatur font, background gradient, dan layout dasar */
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #83a4d4, #b6fbff);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
       padding: 20px;
+      position: relative;
+      overflow-x: hidden;
     }
 
+    /* Membuat efek tekstur/grain pada background menggunakan SVG pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.08)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.12)"/><circle cx="10" cy="60" r="0.8" fill="rgba(255,255,255,0.09)"/><circle cx="90" cy="30" r="0.6" fill="rgba(255,255,255,0.11)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Container utama - membuat card dengan efek glassmorphism */
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      position: relative;
+      animation: slideUp 0.8s ease-out;
     }
 
-    h1, h2 {
+    /* Animasi masuk dari bawah untuk container */
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Section header - mengatur layout dan spacing untuk judul dan subtitle */
+    .header {
       text-align: center;
-      color: #333;
+      margin-bottom: 40px;
+      position: relative;
     }
 
+    /* Styling judul utama dengan efek gradient text */
+    h1 {
+      color: #2c3e50;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Styling untuk subtitle/deskripsi */
+    .subtitle {
+      color: #5a6c7d;
+      font-size: 1.1rem;
+      font-weight: 400;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Container untuk form input dengan background semi-transparan */
+    .form-section {
+      background: rgba(255, 255, 255, 0.7);
+      padding: 30px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    /* Styling untuk setiap grup form (label + input) */
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    /* Styling untuk label dengan accent line di sebelah kiri */
     label {
       display: block;
-      margin: 15px 0 5px;
-      font-weight: bold;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #34495e;
+      font-size: 1rem;
+      position: relative;
     }
 
-    select, button {
+    /* Membuat garis accent di sebelah kiri label */
+    label::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 2px;
+    }
+
+    /* Styling untuk dropdown select dengan custom arrow */
+    select {
       width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 20px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: 2px solid #e1e8ed;
+      background: white;
       font-size: 16px;
+      color: #2c3e50;
+      transition: all 0.3s ease;
+      appearance: none;
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" fill="none" stroke="%23667eea" stroke-width="2"><polyline points="6,9 12,15 18,9"></polyline></svg>');
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 20px;
     }
 
+    /* Efek focus pada dropdown - mengubah border dan menambah shadow */
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Efek hover pada dropdown */
+    select:hover {
+      border-color: #764ba2;
+    }
+
+    /* Container untuk tombol submit */
+    .btn-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    /* Styling tombol dengan gradient background dan efek hover */
     button {
-      background-color: #2196F3;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      font-weight: bold;
+      padding: 16px 40px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      position: relative;
+      overflow: hidden;
     }
 
+    /* Efek shimmer/glowing pada tombol menggunakan pseudo-element */
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    /* Mengaktifkan efek shimmer saat hover */
+    button:hover::before {
+      left: 100%;
+    }
+
+    /* Efek hover pada tombol - mengangkat dan memperbesar shadow */
     button:hover {
-      background-color: #1976D2;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
     }
 
+    /* Efek saat tombol diklik */
+    button:active {
+      transform: translateY(-1px);
+    }
+
+    /* Container untuk menampilkan hasil rekomendasi */
     .result {
-      background: #f0f8ff;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      backdrop-filter: blur(20px);
+      padding: 30px;
+      border-radius: 20px;
+      margin-top: 30px;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      animation: fadeInUp 0.6s ease-out;
     }
 
-    .result img {
-      max-width: 100%;
+    /* Animasi fade in dari bawah untuk hasil */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Styling untuk heading hasil rekomendasi */
+    .result h2 {
+      color: #2c3e50;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Garis accent di bawah heading hasil */
+    .result h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 2px;
+    }
+
+    /* Container untuk info gaya rambut yang direkomendasikan */
+    .gaya-info {
+      background: rgba(102, 126, 234, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      border-left: 4px solid #667eea;
+    }
+
+    /* Styling untuk teks bold dalam info gaya */
+    .gaya-info strong {
+      color: #2c3e50;
+      font-size: 1.1rem;
+    }
+
+    /* Container untuk section tips dan penjelasan */
+    .tips-section {
+      background: rgba(118, 75, 162, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      border-left: 4px solid #764ba2;
+    }
+
+    /* Styling untuk heading tips */
+    .tips-section strong {
+      color: #2c3e50;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    /* Reset list styling untuk tips */
+    .tips-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    /* Styling untuk setiap item tips dengan icon dan hover effect */
+    .tips-section li {
+      background: white;
+      margin: 10px 0;
+      padding: 12px 15px;
       border-radius: 10px;
-      margin-top: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: relative;
+      padding-left: 40px;
+      transition: transform 0.2s ease;
+    }
+
+    /* Efek hover pada item tips - bergeser ke kanan */
+    .tips-section li:hover {
+      transform: translateX(5px);
+    }
+
+    /* Icon sparkle untuk setiap tips */
+    .tips-section li::before {
+      content: '✨';
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+    }
+
+    /* Grid layout untuk menampilkan gambar-gambar gaya rambut */
+    .gambar-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+      justify-items: center;
+    }
+
+    /* Styling untuk gambar dengan rasio 4:6 dan hover effects */
+    .gambar-container img {
+      width: 200px;
+      height: 300px; /* Rasio 4x6 (200px x 300px) */
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+    }
+
+    /* Efek hover pada gambar - mengangkat dan memperbesar */
+    .gambar-container img:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      border-color: rgba(102, 126, 234, 0.3);
+    }
+
+    /* Media query untuk tablet */
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px;
+        margin: 10px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .form-section {
+        padding: 20px;
+      }
+
+      .gambar-container {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+
+      .gambar-container img {
+        width: 160px;
+        height: 240px; /* Mempertahankan rasio 4x6 pada mobile */
+      }
+    }
+
+    /* Media query untuk mobile kecil */
+    @media (max-width: 480px) {
+      .gambar-container {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .gambar-container img {
+        width: 140px;
+        height: 210px; /* Mempertahankan rasio 4x6 pada mobile kecil */
+      }
+    }
+
+    /* Animasi loading spinner */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+
+    /* Keyframe untuk animasi rotasi loading */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
+  <!-- Container utama yang membungkus seluruh konten -->
   <div class="container">
-    <h1>✨ AI Rekomendasi Gaya Rambut</h1>
-    <p style="text-align:center">Pilih bentuk wajah dan jenis rambut Anda untuk mendapatkan gaya yang cocok</p>
+    <!-- Section header berisi judul dan deskripsi -->
+    <div class="header">
+      <h1>✨ AI Rekomendasi Gaya Rambut</h1>
+      <p class="subtitle">Temukan gaya rambut yang sempurna sesuai dengan bentuk wajah dan jenis rambut Anda</p>
+    </div>
 
-    <label for="wajah">Pilih Bentuk Wajah:</label>
-    <select id="wajah">
-      <option value="">-- Pilih --</option>
-      <option value="oval">Oval</option>
-      <option value="bulat">Bulat</option>
-      <option value="persegi">Persegi</option>
-      <option value="segitiga">Segitiga</option>
-    </select>
+    <!-- Section form berisi input untuk bentuk wajah dan jenis rambut -->
+    <div class="form-section">
+      <!-- Grup form untuk pemilihan bentuk wajah -->
+      <div class="form-group">
+        <label for="wajah">Pilih Bentuk Wajah Anda:</label>
+        <select id="wajah">
+          <option value="">-- Pilih Bentuk Wajah --</option>
+          <option value="oval">Oval</option>
+          <option value="bulat">Bulat</option>
+          <option value="persegi">Persegi</option>
+          <option value="segitiga">Segitiga</option>
+        </select>
+      </div>
 
-    <label for="rambut">Pilih Jenis Rambut:</label>
-    <select id="rambut">
-      <option value="">-- Pilih --</option>
-      <option value="lurus">Lurus</option>
-      <option value="gelombang">Gelombang</option>
-      <option value="keriting">Keriting</option>
-    </select>
+      <!-- Grup form untuk pemilihan jenis rambut -->
+      <div class="form-group">
+        <label for="rambut">Pilih Jenis Rambut Anda:</label>
+        <select id="rambut">
+          <option value="">-- Pilih Jenis Rambut --</option>
+          <option value="lurus">Lurus</option>
+          <option value="gelombang">Gelombang</option>
+          <option value="keriting">Keriting</option>
+        </select>
+      </div>
 
-    <button onclick="tampilkanRekomendasi()">Cari Rekomendasi</button>
+      <!-- Container tombol submit -->
+      <div class="btn-container">
+        <button onclick="tampilkanRekomendasi()" id="btnRekomendasi">
+          Cari Rekomendasi Gaya Rambut
+        </button>
+      </div>
+    </div>
 
+    <!-- Container untuk menampilkan hasil rekomendasi (awalnya tersembunyi) -->
     <div id="hasil" class="result" style="display:none"></div>
   </div>
 
   <script>
+    // Database rekomendasi gaya rambut berdasarkan bentuk wajah dan jenis rambut
     const dataRekomendasi = {
-  oval: {
-    lurus: {
-      gaya: "Bob Panjang, Layer Panjang, Poni Samping",
-      tips: [
-        "Bob Panjang memberi keseimbangan alami pada wajah oval",
-        "Layer panjang menambah volume dan dimensi tanpa membuat wajah terlihat panjang",
-        "Poni samping mempertegas tulang pipi"
-      ],
-      gambar: [
-  "images/oval_lurus_bobpanjang.jpg",
-  "images/oval_lurus_layerpanjang.jpg",
-  "images/oval_lurus_ponisamping.jpg"
-] 
-    },
-    gelombang: {
-      gaya: "Long Waves, Layered Waves, Pixie dengan Poni Panjang",
-      tips: [
-        "Long waves memberi kesan feminin dan santai",
-        "Layered waves memberikan tekstur dan volume alami",
-        "Pixie dengan poni panjang menambah kesan modern dan berani"
-      ],
-      gambar: [
-  "images/oval_gelombang_longwaves.jpg",
-  "images/oval_gelombang_layerdwaves.jpg",
-  "images/oval_gelombang_pixie.jpg"
-]
-    },
-    keriting: {
-      gaya: "Shoulder-Length Curly Bob, Curly Shag, Middle Part Afro",
-      tips: [
-        "Curly bob menunjukkan bentuk wajah tanpa menumpuk di dagu",
-        "Curly shag mengikuti gelombang alami",
-        "Middle part afro fokus pada simetri wajah"
-      ],
-      gambar: [
-  "images/oval_keriting_curlybob.jpg",
-  "images/oval_keriting_curlyshag.jpg",
-  "images/oval_keriting_middlepartafro.jpg"
-]
-    }
-  },
-  bulat: {
-    lurus: {
-      gaya: "Layer Panjang Lurus, Side Swept Bangs, Lob Asimetris",
-      tips: [
-        "Layer panjang membuat wajah tampak lebih panjang",
-        "Side swept bangs menyeimbangkan pipi yang chubby",
-        "Lob asimetris memberi kesan wajah lebih ramping"
-      ],
-      gambar: [
-  "images/bulat_lurus_layerpanjang.jpg",
-  "images/bulat_lurus_sidesweptbangs.jpg",
-  "images/bulat_lurus_lobasimetris.jpg"
-]
-    },
-    gelombang: {
-      gaya: "Soft Waves di Bawah Dagu, Messy Layered Waves, Deep Side Part",
-      tips: [
-        "Fokuskan volume di bawah dagu, hindari di pipi",
-        "Messy layered waves memberi kesan lebih tirus",
-        "Deep side part menciptakan ilusi wajah lebih oval"
-      ],
-      gambar: [
-  "images/bulat_geelombang_softwaves.jpg",
-  "images/bulat_gelombang_messylayeredwaves.jpg",
-  "images/bulat_gelombang_deepsidepart.jpg"
-]
-    },
-    keriting: {
-      gaya: "Curly Undercut, Shaggy Curly Bob, Asymmetrical Curly Bob",
-      tips: [
-        "Curly undercut fokus volume di atas, bukan samping",
-        "Shaggy curly bob mengontrol volume dan memberi struktur",
-        "Asymmetrical curly bob membantu memanjangkan wajah"
-      ],
-      gambar: [
-  "images/bulat_keriting_curlyundercut.jpg",
-  "images/bulat_keriting_shaggycurlybob.jpg",
-  "images/bulat_keriting_asymmetricalcurlybob.jpg"
-]
-    }
-  },
-  persegi: {
-    lurus: {
-      gaya: "Layer Lembut, Blunt Bangs dengan Layer, Shoulder-Length Bob",
-      tips: [
-        "Layer lembut melembutkan rahang yang tegas",
-        "Blunt bangs dengan layer memperhalus garis wajah",
-        "Bob panjang medium meredam sudut wajah"
-      ],
-      gambar: [
-  "images/persegi_lurus_layerlembut.jpg",
-  "images/persegi_lurus_bluntbangs.jpg",
-  "images/persegi_lurus_shoulderlengthbob.jpg"
-]
-    },
-    gelombang: {
-      gaya: "Loose Waves, Layer Waves, Side-Parted Lob",
-      tips: [
-        "Loose waves menyeimbangkan bentuk wajah bersudut",
-        "Layer waves memberi kesan lembut dan feminin",
-        "Side-parted lob mengurangi kesan 'kotak' pada rahang"
-      ],
-      gambar: [
-  "images/persegi_gelombang_loosewaves.jpg",
-  "images/persegi_gelombang_layerwaves.jpg",
-  "images/persegi_gelombang_sidepartedlob.jpg"
-]
-    },
-    keriting: {
-      gaya: "Voluminous Curls di Atas Bahu, Curly Bangs, Angled Curly Bob",
-      tips: [
-        "Voluminous Curls Fokus di atas untuk menyeimbangkan rahang",
-        "Curly bangs menyamarkan garis dahi",
-        "Angled curly bob memberi gerakan alami"
-      ],
-      gambar: [
-  "images/persegi_keriting_voluminouscurls.jpg",
-  "images/persegi_keriting_curlybangs.jpg",
-  "images/persegi_keriting_angledcurlybob.jpg"
-]
-    }
-  },
-  segitiga: {
-    lurus: {
-      gaya: "Full Bangs, Choppy Bob, Shoulder Length Layer",
-      tips: [
-        "Full bangs menyeimbangkan dahi sempit dan rahang lebar",
-        "Choppy bob memberi tekstur dan volume di atas",
-        "Shoulder length layer membuat wajah lebih proporsional"
-      ],
-      gambar: [
-    "images/segitiga_lurus_fullbangs.jpg",
-    "images/segitiga_lurus_choppybob.jpg",
-    "images/segitiga_lurus_shoulderlengthlayer.jpg"
-      ]
-    },
-    gelombang: {
-      gaya: "Wavy Bob dengan Poni Tebal, Loose Curls with Volume on Top, Half-Up Waves",
-      tips: [
-        "Wavy bob menambah dimensi pada bagian atas wajah",
-        "Loose curls dengan volume atas menyeimbangkan dahi dan rahang",
-        "Half-up waves fokuskan gaya ke bagian atas kepala"
-      ],
-      gambar: [
-    "images/segitiga_gelombang_wavybob.jpg",
-    "images/segitiga_gelombang_loosecurls.jpg",
-    "images/segitiga_gelombang_halfupwaves.jpg"
-      ]
-    },
-    keriting: {
-      gaya: "High Volume Curly Top, Curly Bob dengan Poni, Asymmetrical Curly Style",
-      tips: [
-        "High volume curly top menyeimbangkan proporsi wajah",
-        "Curly bob dengan poni melembutkan rahang",
-        "Asymmetrical curly style menyamarkan rahang lebar"
-      ],
-      gambar: [
-  "images/segitiga_keriting_highvolumecurlytop.jpg",
-  "images/segitiga_keriting_curlybob.jpg",
-  "images/segitiga_keriting_asymmetricalcurly.jpg"
-]
-    }
-  }
-};
+      // Rekomendasi untuk wajah oval
+      oval: {
+        // Kombinasi wajah oval + rambut lurus
+        lurus: {
+          gaya: "Bob Panjang, Layer Panjang, Poni Samping",
+          tips: [
+            "Bob Panjang memberi keseimbangan alami pada wajah oval",
+            "Layer panjang menambah volume dan dimensi tanpa membuat wajah terlihat panjang",
+            "Poni samping mempertegas tulang pipi"
+          ],
+          gambar: [
+            "images/oval_lurus_bobpanjang.jpg",
+            "images/oval_lurus_layerpanjang.jpg",
+            "images/oval_lurus_ponisamping.jpg"
+          ] 
+        },
+        // Kombinasi wajah oval + rambut gelombang
+        gelombang: {
+          gaya: "Long Waves, Layered Waves, Pixie dengan Poni Panjang",
+          tips: [
+            "Long waves memberi kesan feminin dan santai",
+            "Layered waves memberikan tekstur dan volume alami",
+            "Pixie dengan poni panjang menambah kesan modern dan berani"
+          ],
+          gambar: [
+            "images/oval_gelombang_longwaves.jpg",
+            "images/oval_gelombang_layerdwaves.jpg",
+            "images/oval_gelombang_pixie.jpg"
+          ]
+        },
+        // Kombinasi wajah oval + rambut keriting
+        keriting: {
+          gaya: "Shoulder-Length Curly Bob, Curly Shag, Middle Part Afro",
+          tips: [
+            "Curly bob menunjukkan bentuk wajah tanpa menumpuk di dagu",
+            "Curly shag mengikuti gelombang alami",
+            "Middle part afro fokus pada simetri wajah"
+          ],
+          gambar: [
+            "images/oval_keriting_curlybob.jpg",
+            "images/oval_keriting_curlyshag.jpg",
+            "images/oval_keriting_middlepartafro.jpg"
+          ]
+        }
+      },
+      // Rekomendasi untuk wajah bulat
+      bulat: {
+        // Kombinasi wajah bulat + rambut lurus
+        lurus: {
+          gaya: "Layer Panjang Lurus, Side Swept Bangs, Lob Asimetris",
+          tips: [
+            "Layer panjang membuat wajah tampak lebih panjang",
+            "Side swept bangs menyeimbangkan pipi yang chubby",
+            "Lob asimetris memberi kesan wajah lebih ramping"
+          ],
+          gambar: [
+            "images/bulat_lurus_layerpanjang.jpg",
+            "images/bulat_lurus_sidesweptbangs.jpg",
+            "images/bulat_lurus_lobasimetris.jpg"
+          ]
+        },
+        // Kombinasi wajah bulat + rambut gelombang
+        gelombang: {
+          gaya: "Soft Waves di Bawah Dagu, Messy Layered Waves, Deep Side Part",
+          tips: [
+            "Fokuskan volume di bawah dagu, hindari di pipi",
+            "Messy layered waves memberi kesan lebih tirus",
+            "Deep side part menciptakan ilusi wajah lebih oval"
+          ],
+          gambar: [
+            "images/bulat_geelombang_softwaves.jpg",
+            "images/bulat_gelombang_messylayeredwaves.jpg",
+            "images/bulat_gelombang_deepsidepart.jpg"
+          ]
+        },
+        // Kombinasi wajah bulat + rambut keriting
+        keriting: {
+          gaya: "Curly Undercut, Shaggy Curly Bob, Asymmetrical Curly Bob",
+          tips: [
+            "Curly undercut fokus volume di atas, bukan samping",
+            "Shaggy curly bob mengontrol volume dan memberi struktur",
+            "Asymmetrical curly bob membantu memanjangkan wajah"
+          ],
+          gambar: [
+            "images/bulat_keriting_curlyundercut.jpg",
+            "images/bulat_keriting_shaggycurlybob.jpg",
+            "images/bulat_keriting_asymmetricalcurlybob.jpg"
+          ]
+        }
+      },
+      // Rekomendasi untuk wajah persegi
+      persegi: {
+        // Kombinasi wajah persegi + rambut lurus
+        lurus: {
+          gaya: "Layer Lembut, Blunt Bangs dengan Layer, Shoulder-Length Bob",
+          tips: [
+            "Layer lembut melembutkan rahang yang tegas",
+            "Blunt bangs dengan layer memperhalus garis wajah",
+            "Bob panjang medium meredam sudut wajah"
+          ],
+          gambar: [
+            "images/persegi_lurus_layerlembut.jpg",
+            "images/persegi_lurus_bluntbangs.jpg",
+            "images/persegi_lurus_shoulderlengthbob.jpg"
+          ]
+        },
+        // Kombinasi wajah persegi + rambut gelombang
+        gelombang: {
+          gaya: "Loose Waves, Layer Waves, Side-Parted Lob",
+          tips: [
+            "Loose waves menyeimbangkan bentuk wajah bersudut",
+            "Layer waves memberi kesan lembut dan feminin",
+            "Side-parted lob mengurangi kesan 'kotak' pada rahang"
+          ],
+          gambar: [
+            "images/persegi_gelombang_loosewaves.jpg",
+            "images/persegi_gelombang_layerwaves.jpg",
+            "images/persegi_gelombang_sidepartedlob.jpg"
+          ]
+        },
+        // Kombinasi wajah persegi + rambut keriting
+        keriting: {
+          gaya: "Voluminous Curls di Atas Bahu, Curly Bangs, Angled Curly Bob",
+          tips: [
+            "Voluminous Curls Fokus di atas untuk menyeimbangkan rahang",
+            "Curly bangs menyamarkan garis dahi",
+            "Angled curly bob memberi gerakan alami"
+          ],
+          gambar: [
+            "images/persegi_keriting_voluminouscurls.jpg",
+            "images/persegi_keriting_curlybangs.jpg",
+            "images/persegi_keriting_angledcurlybob.jpg"
+          ]
+        }
+      },
+      // Rekomendasi untuk wajah segitiga
+      segitiga: {
+        // Kombinasi wajah segitiga + rambut lurus
+        lurus: {
+          gaya: "Full Bangs, Choppy Bob, Shoulder Length Layer",
+          tips: [
+            "Full bangs menyeimbangkan dahi sempit dan rahang lebar",
+            "Choppy bob memberi tekstur dan volume di atas",
+            "Shoulder length layer membuat wajah lebih proporsional"
+          ],
+          gambar: [
+            "images/segitiga_lurus_fullbangs.jpg",
+            "images/segitiga_lurus_choppybob.jpg",
+            "images/segitiga_lurus_shoulderlengthlayer.jpg"
+          ]
+        },
+        // Kombinasi wajah segitiga + rambut gelombang
+        gelombang: {
+          gaya: "Wavy Bob dengan Poni Tebal, Loose Curls with Volume on Top, Half-Up Waves",
+          tips: [
+            "Wavy bob menambah dimensi pada bagian atas wajah",
+            "Loose curls dengan volume atas menyeimbangkan dahi dan rahang",
+            "Half-up waves fokuskan gaya ke bagian atas kepala"
+          ],
+          gambar: [
+            "images/segitiga_gelombang_wavybob.jpg",
+            "images/segitiga_gelombang_loosecurls.jpg",
+            "images/segitiga_gelombang_halfupwaves.jpg"
+          ]
+        },
+        // Kombinasi wajah segitiga + rambut keriting
+        keriting: {
+          gaya: "High Volume Curly Top, Curly Bob dengan Poni, Asymmetrical Curly Style",
+          tips: [
+            "High volume curly top menyeimbangkan proporsi wajah",
+            "Curly bob dengan poni melembutkan rahang",
+            "Asymmetrical curly style menyamarkan rahang lebar"
+          ],
+          gambar: [
+            "images/segitiga_keriting_highvolumecurlytop.jpg",
+            "images/segitiga_keriting_curlybob.jpg",
+            "images/segitiga_keriting_asymmetricalcurly.jpg"
+          ]
+        }
+      }
+    };
 
-
+    // Fungsi utama untuk menampilkan rekomendasi gaya rambut
     function tampilkanRekomendasi() {
+      // Mengambil nilai dari dropdown bentuk wajah dan jenis rambut
       const bentuk = document.getElementById("wajah").value;
       const jenis = document.getElementById("rambut").value;
       const hasil = document.getElementById("hasil");
+      const btn = document.getElementById("btnRekomendasi");
 
+      // Validasi: pastikan kedua dropdown sudah dipilih
       if (!bentuk || !jenis) {
-        alert("Silakan pilih kedua opsi terlebih dahulu!");
+        // Membuat alert custom dengan styling yang menarik
+        const alertDiv = document.createElement('div');
+        alertDiv.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+          color: white;
+          padding: 20px 30px;
+          border-radius: 15px;
+          box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+          z-index: 1000;
+          text-align: center;
+          font-weight: 600;
+          animation: shake 0.5s ease-in-out;
+        `;
+        alertDiv.innerHTML = '⚠️ Silakan pilih kedua opsi terlebih dahulu!';
+        document.body.appendChild(alertDiv);
+        
+        // Menghapus alert setelah 3 detik
+        setTimeout(() => {
+          document.body.removeChild(alertDiv);
+        }, 3000);
         return;
       }
 
-      const data = dataRekomendasi[bentuk][jenis];
-      hasil.innerHTML = `
-        <h2>Rekomendasi Gaya Rambut</h2>
-        <p><strong>Gaya:</strong> ${data.gaya}</p>
-        <p><strong>Tips:</strong></p>
-        <ul>${data.tips.map(tip => `<li>${tip}</li>`).join('')}</ul>
-        <div class="gambar-container">
-          ${data.gambar.map(src => `<img src="${src}" alt="Gaya Rambut">`).join('')}
-        </div>
+      // Mengubah tombol ke mode loading
+      btn.innerHTML = '<div class="loading"></div>Sedang mencari rekomendasi...';
+      btn.disabled = true;
 
-
-      `;
-      hasil.style.display = "block";
+      // Simulasi delay loading untuk UX yang lebih baik
+      setTimeout(() => {
+        // Mengambil data rekomendasi berdasarkan pilihan user
+        const data = dataRekomendasi[bentuk][jenis];
+        
+        // Menampilkan hasil rekomendasi dengan HTML template
+        hasil.innerHTML = `
+          <h2>🎯 Rekomendasi Gaya Rambut Anda</h2>
+          <div class="gaya-info">
+            <strong>Gaya Yang Cocok:</strong> ${data.gaya}
+          </div>
+          <div class="tips-section">
+            <strong>💡 Tips & Penjelasan:</strong>
+            <ul>${data.tips.map(tip => `<li>${tip}</li>`).join('')}</ul>
+          </div>
+          <div class="gambar-container">
+            ${data.gambar.map(src => `<img src="${src}" alt="Gaya Rambut" loading="lazy">`).join('')}
+          </div>
+        `;
+        
+        // Menampilkan hasil dan scroll ke posisinya
+        hasil.style.display = "block";
+        hasil.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Mengembalikan tombol ke kondisi normal
+        btn.innerHTML = 'Cari Rekomendasi Gaya Rambut';
+        btn.disabled = false;
+      }, 1500);
     }
+
+    // Menambahkan CSS untuk animasi shake pada alert
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+        25% { transform: translate(-50%, -50%) translateX(-5px); }
+        75% { transform: translate(-50%, -50%) translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
